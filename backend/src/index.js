@@ -5,11 +5,13 @@ import cors from "cors"
 import cookieParser from "cookie-parser";
 import authRoute from "./routes/authRoutes.js"
 import memberRoute from "./routes/memberRoutes.js"
+import job from "./lib/cron.js";
 
 const app = express();
 
 const PORT = process.env.PORT || 5000;
 
+job.start();
 app.use(cors())
 app.use(express.json());
 app.use(cookieParser());

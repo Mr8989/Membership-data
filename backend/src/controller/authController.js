@@ -50,10 +50,15 @@ export const login = async (req, res) => {
         const {email, password} = req.body;
         const user = await User.findOne({email})
 
+        if(!user){
+            res.status(401).json({message: "Invalid email or password"})
+            console.log("User not found", user)
+        }
+
         if(user && (await user.comparePassword(password))){
             const {accessToken, refreshToken} = generateToken(user._id);
 
-            res.json({
+            res.status(201).json({
                 accessToken,
                 refreshToken,
                 id: user._id, 
@@ -61,19 +66,17 @@ export const login = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 message: "Logged in successfully"
-            })
-        } else{
-            res.status(401).json({message: "Invalid email or password"})
-        }
+            });
+        } 
     } catch (error) {
-        console.log("Error in login controller ", error.message);
-        res.status(500).json({message: "Internal server error", error:message})
+        console.log("Error in login controller ", error);
+        res.status(500).json({message: "Internal server error", error:error})
     }
 }
 
-export const logout = async(re, res) => {
+export const logout = async(req, res) => {
     try {
-        const refreshToken = req.body.refreshToken;
+        const {refreshToken} = req.body;
 
         if(!refreshToken){
             return res.status(400).json({message:"No refresh token provided for logout"})

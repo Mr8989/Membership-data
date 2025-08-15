@@ -7,7 +7,7 @@ const memberScheme = new mongoose.Schema({
     },
     lastName: {
         type: String,
-        required: true 
+        required: true  
     },
     phone: {
         type: Number,
